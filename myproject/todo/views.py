@@ -5,6 +5,7 @@ from django.contrib import messages
 from rest_framework.decorators import api_view
 from .serializers import TaskSerializer
 from rest_framework.response import Response
+from rest_framework import status
 # Create your views here.
 def task_list(request):
     tasks = Tasks.objects.all()
@@ -43,16 +44,25 @@ def delete_task(request,pk):
 
 @api_view(['GET'])
 def get_tasks(request):
-    print('\n')
+    # print('\n')
     tasks = Tasks.objects.all()
-    print('tasks :',tasks)
-    print('\n')
+    # print('tasks :',tasks)
+    # print('\n')
     serializer = TaskSerializer(tasks, many=True)
-    print('serializer :',serializer)
-    print('\n')
-    print('serializer.data :',serializer.data)
+    # print('serializer :',serializer)
+    # print('\n')
+    # print('serializer.data :',serializer.data)
     foo = Response(serializer.data)
-    print('\n')
-    print('Response(serializer.data) :',foo)
+    # print('\n')
+    # print('Response(serializer.data) :',type(foo))
     return foo
     
+@api_view(['POST'])
+def add_task_api(request):
+    print('request.POST :',request.data)
+    form = TaskForms(request.data)
+    if form.is_valid():
+        form.save()
+        return Response({"success":True},status = status.HTTP_201_CREATED)
+    else:
+        return Response({"success":False, "errors":form.errors}, status=status.HTTP_400_BAD_REQUEST)
