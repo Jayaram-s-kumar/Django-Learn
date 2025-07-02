@@ -42,7 +42,7 @@ def delete_task(request,pk):
     task.delete()
     return redirect('task_list')
 
-@api_view(['GET'])
+@api_view(["GET"])
 def get_tasks(request):
     # print('\n')
     tasks = Tasks.objects.all()
@@ -57,7 +57,7 @@ def get_tasks(request):
     # print('Response(serializer.data) :',type(foo))
     return foo
     
-@api_view(['POST'])
+@api_view(["POST"])
 def add_task_api(request):
     print('request.POST :',request.data)
     form = TaskForms(request.data)
@@ -66,3 +66,29 @@ def add_task_api(request):
         return Response({"success":True},status = status.HTTP_201_CREATED)
     else:
         return Response({"success":False, "errors":form.errors}, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(["PUT"])
+def update_task_api(request,pk):
+    task = get_object_or_404(Tasks,pk=pk)
+    print('task is ',task)
+    form = TaskForms(request.data,instance=task)
+    if form.is_valid():
+        form.save()
+        return Response({"message":"Task upadted"},status=status.HTTP_201_CREATED)
+    else:
+        return Response({"message":"Task updation failed"},status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(["DELETE"])
+def delete_task_api(request,pk):
+    try:
+       task = get_object_or_404(Tasks,pk=pk)
+       task.delete()
+       return Response(
+           {"message":"Task deleted successfully"},
+           status=status.HTTP_200_OK
+       )
+    except Exception as e:
+        return Response(
+            {"message":"Task deletion failed","error":str(e)},
+            status=status.HTTP_400_BAD_REQUEST
+        )
