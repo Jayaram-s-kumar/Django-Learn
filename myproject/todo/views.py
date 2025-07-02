@@ -44,17 +44,17 @@ def delete_task(request,pk):
 
 @api_view(["GET"])
 def get_tasks(request):
-    # print('\n')
+    print('\n')
     tasks = Tasks.objects.all()
-    # print('tasks :',tasks)
-    # print('\n')
+    print('tasks :',tasks,' type ',type(tasks))
+    print('\n')
     serializer = TaskSerializer(tasks, many=True)
-    # print('serializer :',serializer)
-    # print('\n')
-    # print('serializer.data :',serializer.data)
+    print('serializer :',serializer,' type: ',type(serializer))
+    print('\n')
+    print('serializer.data :',serializer.data,' type ',type(serializer.data))
     foo = Response(serializer.data)
-    # print('\n')
-    # print('Response(serializer.data) :',type(foo))
+    print('\n')
+    print('Response(serializer.data) :',type(foo))
     return foo
     
 @api_view(["POST"])
